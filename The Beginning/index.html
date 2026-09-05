@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="vi" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI English Master - Nền Tảng Học Tiếng Anh Thông Minh</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+  
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen transition-colors duration-300 bg-mesh-dark">
+
+  <!-- HEADER -->
+  <header class="sticky top-0 z-40 border-b border-slate-700/60 glass-panel">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <!-- Logo -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-cyan-400 flex items-center justify-center text-white text-xl shadow-lg shadow-indigo-500/30">
+          <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-indigo-400 via-purple-300 to-cyan-400 bg-clip-text text-transparent">
+              AI English Master
+            </span>
+            <span class="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+              Gemini AI
+            </span>
+          </div>
+          <p class="text-xs text-slate-400 hidden sm:block">Gia sư tiếng Anh AI 1-kèm-1 thông minh</p>
+        </div>
+      </div>
+
+      <!-- Stats & Quick Actions -->
+      <div class="flex items-center gap-3">
+        <!-- Streak -->
+        <div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-sm font-semibold" title="Chuỗi ngày học liên tục">
+          <i class="fa-solid fa-fire text-amber-500 animate-pulse"></i>
+          <span id="streakCount">3</span> ngày
+        </div>
+
+        <!-- XP Points -->
+        <div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-sm font-semibold" title="Điểm kinh nghiệm">
+          <i class="fa-solid fa-bolt text-yellow-400"></i>
+          <span id="xpCount">250</span> XP
+        </div>
+
+        <!-- AI Settings Modal Button -->
+        <button id="btnOpenSettings" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-sm font-medium transition shadow-sm" title="Cài đặt API Key & AI">
+          <i class="fa-solid fa-sliders text-indigo-400"></i>
+          <span class="hidden md:inline">Cài đặt AI</span>
+        </button>
+
+        <!-- Theme Toggle -->
+        <button id="themeToggle" class="w-9 h-9 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 flex items-center justify-center transition" title="Đổi giao diện Sáng / Tối">
+          <i class="fa-solid fa-sun text-amber-400"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex overflow-x-auto no-scrollbar gap-1 sm:gap-2 pt-1 pb-2">
+      <button class="nav-tab active-tab flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap" data-target="tab-speaking">
+        <i class="fa-solid fa-comments text-cyan-400"></i>
+        <span>1. Luyện Nói & Giao Tiếp</span>
+      </button>
+      <button class="nav-tab flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-200 transition-all whitespace-nowrap" data-target="tab-writing">
+        <i class="fa-solid fa-pen-nib text-indigo-400"></i>
+        <span>2. Sửa Ngữ Pháp & Viết</span>
+      </button>
+      <button class="nav-tab flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-200 transition-all whitespace-nowrap" data-target="tab-vocab">
+        <i class="fa-solid fa-layer-group text-emerald-400"></i>
+        <span>3. Flashcard Từ Vựng</span>
+      </button>
+      <button class="nav-tab flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-200 transition-all whitespace-nowrap" data-target="tab-reading">
+        <i class="fa-solid fa-book-open text-purple-400"></i>
+        <span>4. Luyện Đọc Hiểu & Quiz</span>
+      </button>
+      <button class="nav-tab flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-200 transition-all whitespace-nowrap" data-target="tab-pronounce">
+        <i class="fa-solid fa-microphone-lines text-pink-400"></i>
+        <span>5. Luyện Phát Âm (IPA)</span>
+      </button>
+      <button class="nav-tab flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-200 transition-all whitespace-nowrap" data-target="tab-dashboard">
+        <i class="fa-solid fa-chart-pie text-amber-400"></i>
+        <span>6. Báo Cáo Tiến Độ</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+    <!-- ==================== TAB 1: SPEAKING & CHAT ==================== -->
+    <section id="tab-speaking" class="tab-content block">
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        
+        <!-- Sidebar: Chọn Tình Huống Hội Thoại -->
+        <div class="lg:col-span-1 space-y-4">
+          <div class="glass-panel p-4 rounded-2xl border border-slate-700/60 shadow-xl">
+            <h3 class="font-bold text-slate-100 flex items-center gap-2 mb-3">
+              <i class="fa-solid fa-masks-theater text-cyan-400"></i>
+              Chọn Tình Huống
+            </h3>
+            
+            <div class="space-y-2" id="scenarioList">
+              <button class="scenario-btn w-full text-left p-3 rounded-xl bg-indigo-600/20 border border-indigo-500/40 text-slate-200 hover:bg-indigo-600/30 transition flex items-center gap-3" data-scenario="coffee">
+                <span class="text-2xl">☕</span>
+                <div>
+                  <div class="font-semibold text-sm text-indigo-300">Order tại quán Cafe</div>
+                  <div class="text-xs text-slate-400">Giao tiếp thường nhật</div>
+                </div>
+              </button>
+
+              <button class="scenario-btn w-full text-left p-3 rounded-xl bg-slate-800/80 border border-slate-700 text-slate-300 hover:bg-slate-700/50 transition flex items-center gap-3" data-scenario="interview">
+                <span class="text-2xl">💼</span>
+                <div>
+                  <div class="font-semibold text-sm text-slate-200">Phỏng vấn xin việc</div>
+                  <div class="text-xs text-slate-400">Tiếng Anh công sở & CV</div>
+                </div>
+              </button>
+
+              <button class="scenario-btn w-full text-left p-3 rounded-xl bg-slate-800/80 border border-slate-700 text-slate-300 hover:bg-slate-700/50 transition flex items-center gap-3" data-scenario="airport">
+                <span class="text-2xl">✈️</span>
+                <div>
+                  <div class="font-semibold text-sm text-slate-200">Check-in Sân bay & Du lịch</div>
+                  <div class="text-xs text-slate-400">Hỏi đường, thủ tục bay</div>
+                </div>
+              </button>
+
+              <button class="scenario-btn w-full text-left p-3 rounded-xl bg-slate-800/80 border border-slate-700 text-slate-300 hover:bg-slate-700/50 transition flex items-center gap-3" data-scenario="ielts">
+                <span class="text-2xl">🎓</span>
+                <div>
+                  <div class="font-semibold text-sm text-slate-200">IELTS Speaking Simulator</div>
+                  <div class="text-xs text-slate-400">Luyện Part 1, 2, 3 với AI</div>
+                </div>
+              </button>
+
+              <button class="scenario-btn w-full text-left p-3 rounded-xl bg-slate-800/80 border border-slate-700 text-slate-300 hover:bg-slate-700/50 transition flex items-center gap-3" data-scenario="freetalk">
+                <span class="text-2xl">🌟</span>
+                <div>
+                  <div class="font-semibold text-sm text-slate-200">Trò chuyện Tự do</div>
+                  <div class="text-xs text-slate-400">Gia sư AI Emma & Alex</div>
+                </div>
+              </button>
+            </div>
+
+            <!-- Voice Controls Setting -->
+            <div class="mt-5 pt-4 border-t border-slate-700/50 space-y-3">
+              <label class="flex items-center justify-between text-xs text-slate-300 cursor-pointer">
+                <span><i class="fa-solid fa-volume-high text-cyan-400 mr-1.5"></i>Tự động đọc giọng AI</span>
+                <input type="checkbox" id="chkAutoSpeak" checked class="w-4 h-4 text-indigo-600 rounded bg-slate-800 border-slate-700">
+              </label>
+
+              <label class="flex items-center justify-between text-xs text-slate-300 cursor-pointer">
+                <span><i class="fa-solid fa-language text-purple-400 mr-1.5"></i>Hiện bản dịch tiếng Việt</span>
+                <input type="checkbox" id="chkShowTranslation" checked class="w-4 h-4 text-indigo-600 rounded bg-slate-800 border-slate-700">
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chat Area -->
+        <div class="lg:col-span-3">
+          <div class="glass-panel rounded-2xl border border-slate-700/60 shadow-xl flex flex-col h-[640px]">
+            
+            <!-- Chat Header -->
+            <div class="p-4 border-b border-slate-700/60 flex items-center justify-between bg-slate-800/40 rounded-t-2xl">
+              <div class="flex items-center gap-3">
+                <div class="relative">
+                  <div class="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-400 to-indigo-600 flex items-center justify-center text-white font-bold text-base shadow-md">
+                    <i class="fa-solid fa-robot"></i>
+                  </div>
+                  <span class="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-slate-900 rounded-full"></span>
+                </div>
+                <div>
+                  <h4 class="font-bold text-slate-100 text-sm flex items-center gap-2" id="chatPartnerName">
+                    Emma (Barista & English Tutor)
+                  </h4>
+                  <p class="text-xs text-cyan-400" id="chatPartnerDesc">Tình huống: Order đồ uống tại quán cà phê</p>
+                </div>
+              </div>
+
+              <!-- Reset Chat -->
+              <button id="btnResetChat" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 border border-slate-700 transition flex items-center gap-1.5">
+                <i class="fa-solid fa-rotate-left"></i> Bắt đầu lại
+              </button>
+            </div>
+
+            <!-- Chat Messages Container -->
+            <div id="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-4">
+              <!-- Messages dynamically injected -->
+            </div>
+
+            <!-- Quick Suggestions / Hints -->
+            <div id="quickSuggestions" class="px-4 py-2 flex flex-wrap gap-2 border-t border-slate-700/40 bg-slate-800/20 text-xs">
+              <span class="text-slate-400 flex items-center gap-1"><i class="fa-regular fa-lightbulb text-amber-400"></i> Gợi ý câu:</span>
+              <button class="hint-btn px-2.5 py-1 rounded-full bg-slate-800 hover:bg-indigo-600/30 border border-slate-700 hover:border-indigo-500/50 text-slate-300 transition">
+                "Hi, could I get a medium iced latte with oat milk, please?"
+              </button>
+              <button class="hint-btn px-2.5 py-1 rounded-full bg-slate-800 hover:bg-indigo-600/30 border border-slate-700 hover:border-indigo-500/50 text-slate-300 transition">
+                "Do you have any pastries or croissants today?"
+              </button>
+            </div>
+
+            <!-- Chat Input Area -->
+            <div class="p-3 sm:p-4 border-t border-slate-700/60 bg-slate-800/40 rounded-b-2xl">
+              <form id="chatForm" class="flex items-center gap-2">
+                
+                <!-- Mic / Speech-to-Text Button -->
+                <button type="button" id="btnMic" class="w-11 h-11 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 flex items-center justify-center text-lg transition flex-shrink-0 relative group" title="Nhấn để nói bằng tiếng Anh">
+                  <i class="fa-solid fa-microphone text-indigo-400 group-hover:text-indigo-300"></i>
+                </button>
+
+                <!-- Recording Indicator (Hidden by default) -->
+                <div id="recordingIndicator" class="hidden items-center gap-2 px-3 py-1.5 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-300 text-xs">
+                  <span class="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
+                  <span>Đang lắng nghe...</span>
+                  <div class="voice-wave-container ml-1">
+                    <div class="voice-bar"></div>
+                    <div class="voice-bar"></div>
+                    <div class="voice-bar"></div>
+                    <div class="voice-bar"></div>
+                    <div class="voice-bar"></div>
+                  </div>
+                </div>
+
+                <!-- Text Input -->
+                <input type="text" id="chatInput" placeholder="Nhập câu trả lời bằng tiếng Anh hoặc bấm Mic..." class="flex-1 bg-slate-900/90 border border-slate-700 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 outline-none transition">
+
+                <!-- Send Button -->
+                <button type="submit" id="btnSendChat" class="w-11 h-11 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white flex items-center justify-center text-base shadow-lg shadow-indigo-600/30 transition flex-shrink-0">
+                  <i class="fa-solid fa-paper-plane"></i>
+                </button>
+              </form>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ==================== TAB 2: WRITING & GRAMMAR ==================== -->
+    <section id="tab-writing" class="tab-content hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- Input Column -->
+        <div class="glass-panel p-6 rounded-2xl border border-slate-700/60 shadow-xl space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-slate-100 text-lg flex items-center gap-2">
+              <i class="fa-solid fa-file-pen text-indigo-400"></i>
+              Nhập Bài Viết / Câu Cần Sửa
+            </h3>
+            
+            <!-- Quick samples -->
+            <select id="sampleWritingSelect" class="bg-slate-800 border border-slate-700 text-xs rounded-lg px-2.5 py-1.5 text-slate-300 outline-none">
+              <option value="">-- Mẫu câu thử nghiệm --</option>
+              <option value="I has been living in Hanoi since five years and I like very much it.">Lỗi thì & Trật tự từ cơ bản</option>
+              <option value="In nowadays, many people thinks that technology make our life more better but also has negative affect.">Lỗi viết Essay IELTS</option>
+              <option value="Dear Sir, I want to ask about my job application which I send last week. Please reply soon.">Email công việc thiếu trang trọng</option>
+            </select>
+          </div>
+
+          <p class="text-xs text-slate-400">
+            Dán bài luận (IELTS/TOEFL Writing), email công việc, bài tập hoặc bất kỳ đoạn văn tiếng Anh nào. AI sẽ phát hiện lỗi ngữ pháp, giải thích chi tiết và gợi ý phiên bản tự nhiên hơn (B2 / C1).
+          </p>
+
+          <textarea id="writingInput" rows="10" placeholder="Type or paste your English text here..." class="w-full bg-slate-900/90 border border-slate-700 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl p-4 text-sm text-slate-100 placeholder-slate-500 outline-none transition resize-none"></textarea>
+
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-slate-400" id="wordCountLabel">0 từ</span>
+            
+            <button id="btnCheckGrammar" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-medium text-sm shadow-lg shadow-indigo-600/30 transition flex items-center gap-2">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+              <span>AI Phân Tích & Sửa Lỗi</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Result Column -->
+        <div class="glass-panel p-6 rounded-2xl border border-slate-700/60 shadow-xl space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-700/60 pb-3">
+            <h3 class="font-bold text-slate-100 text-lg flex items-center gap-2">
+              <i class="fa-solid fa-circle-check text-emerald-400"></i>
+              Kết Quả Đánh Giá & Sửa Lỗi
+            </h3>
+            <span id="grammarScoreBadge" class="hidden px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+              Band 7.5 / C1
+            </span>
+          </div>
+
+          <!-- Loading state -->
+          <div id="grammarLoading" class="hidden py-16 text-center space-y-3">
+            <div class="inline-block w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+            <p class="text-sm text-slate-400">AI đang quét ngữ pháp, từ vựng và cấu trúc câu...</p>
+          </div>
+
+          <!-- Empty placeholder -->
+          <div id="grammarEmptyState" class="py-16 text-center text-slate-500 space-y-2">
+            <i class="fa-solid fa-spell-check text-4xl text-slate-600 mb-2"></i>
+            <p class="text-sm">Chưa có nội dung phân tích.</p>
+            <p class="text-xs">Hãy nhập bài viết ở cột bên trái và bấm nút "AI Phân Tích & Sửa Lỗi".</p>
+          </div>
+
+          <!-- Analysis Results -->
+          <div id="grammarResultContent" class="hidden space-y-4 max-h-[500px] overflow-y-auto pr-1">
+            <!-- Polished Text -->
+            <div class="bg-indigo-950/40 border border-indigo-500/30 rounded-xl p-4">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold uppercase text-indigo-400 tracking-wider flex items-center gap-1.5">
+                  <i class="fa-solid fa-sparkles"></i> Bản Viết Nâng Cấp (Polished Version):
+                </span>
+                <button id="btnCopyPolished" class="text-xs text-slate-400 hover:text-slate-200 transition" title="Sao chép">
+                  <i class="fa-regular fa-copy"></i>
+                </button>
+              </div>
+              <p id="polishedText" class="text-sm text-slate-200 leading-relaxed font-medium"></p>
+            </div>
+
+            <!-- Error Breakdown List -->
+            <div>
+              <h5 class="text-xs font-bold uppercase text-rose-400 tracking-wider mb-2 flex items-center gap-1.5">
+                <i class="fa-solid fa-triangle-exclamation"></i> Chi Tiết Các Lỗi Phát Hiện & Giải Thích:
+              </h5>
+              <div id="errorList" class="space-y-2.5">
+                <!-- Errors inserted via JS -->
+              </div>
+            </div>
+
+            <!-- Vocabulary Upgrade Suggestions -->
+            <div>
+              <h5 class="text-xs font-bold uppercase text-emerald-400 tracking-wider mb-2 flex items-center gap-1.5">
+                <i class="fa-solid fa-arrow-up-right-dots"></i> Nâng Cấp Từ Vựng & Cấu Trúc (Band Boost):
+              </h5>
+              <div id="vocabUpgradeList" class="space-y-2">
+                <!-- Upgrades inserted via JS -->
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ==================== TAB 3: SMART FLASHCARDS ==================== -->
+    <section id="tab-vocab" class="tab-content hidden">
+      <div class="space-y-6">
+        
+        <!-- Controls & Topic Selection -->
+        <div class="glass-panel p-4 sm:p-6 rounded-2xl border border-slate-700/60 shadow-xl flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl">
+              <i class="fa-solid fa-cards"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-slate-100">Kho Từ Vựng & Flashcard 3D</h3>
+              <p class="text-xs text-slate-400">Lật thẻ ghi nhớ, nghe phát âm chuẩn và làm bài kiểm tra nhanh</p>
+            </div>
+          </div>
+
+          <!-- Deck selector & AI generator -->
+          <div class="flex flex-wrap items-center gap-2">
+            <select id="vocabTopicSelect" class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 outline-none">
+              <option value="daily">☕ Giao Tiếp Thường Ngày (A2-B1)</option>
+              <option value="ielts_academic">🎓 IELTS Academic 7.0+ (B2-C1)</option>
+              <option value="business">💼 Tiếng Anh Thương Mại / Business</option>
+              <option value="technology">💻 Công Nghệ & AI / Tech</option>
+            </select>
+
+            <button id="btnOpenAiVocabModal" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition flex items-center gap-1.5 shadow-md">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+              <span>AI Tạo Bộ Từ Mới</span>
+            </button>
+
+            <button id="btnStartVocabQuiz" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold transition flex items-center gap-1.5 shadow-md">
+              <i class="fa-solid fa-circle-question"></i>
+              <span>Làm Mini Quiz</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Flashcard Display Area -->
+        <div id="flashcardSection" class="max-w-xl mx-auto space-y-4">
+          
+          <!-- Card Progress Indicator -->
+          <div class="flex items-center justify-between text-xs text-slate-400 px-2">
+            <span>Thẻ <strong id="currentCardIndex" class="text-indigo-400">1</strong> / <span id="totalCardCount">5</span></span>
+            <span class="flex items-center gap-1"><i class="fa-regular fa-hand-pointer"></i> Nhấn vào thẻ để lật xem nghĩa</span>
+          </div>
+
+          <!-- 3D Flashcard Component -->
+          <div class="perspective-1000 w-full h-80 sm:h-96 cursor-pointer" id="flashcardBox">
+            <div class="flashcard-inner relative w-full h-full transform-style-3d rounded-3xl shadow-2xl transition-all" id="flashcardCard">
+              
+              <!-- Front Side -->
+              <div class="absolute inset-0 w-full h-full backface-hidden glass-panel border-2 border-indigo-500/40 rounded-3xl p-8 flex flex-col justify-between items-center text-center bg-gradient-to-b from-slate-800/90 to-slate-900/90">
+                <div class="w-full flex justify-between items-center text-xs">
+                  <span class="px-2.5 py-1 rounded-full bg-indigo-500/20 text-indigo-300 font-semibold border border-indigo-500/30" id="cardCategory">IELTS Academic</span>
+                  <button class="w-8 h-8 rounded-full bg-slate-800 hover:bg-indigo-600 text-slate-300 hover:text-white transition flex items-center justify-center btn-speak-word" title="Nghe phát âm">
+                    <i class="fa-solid fa-volume-high"></i>
+                  </button>
+                </div>
+
+                <div class="space-y-2">
+                  <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-wide" id="cardWord">Ubiquitous</h2>
+                  <p class="text-sm font-mono text-cyan-400" id="cardPhonetic">/juːˈbɪk.wə.təs/</p>
+                  <span class="inline-block text-xs font-semibold px-2 py-0.5 rounded bg-slate-700 text-slate-300" id="cardType">adjective</span>
+                </div>
+
+                <div class="text-xs text-slate-400 flex items-center gap-1">
+                  <i class="fa-solid fa-arrows-rotate"></i> Lật thẻ để xem định nghĩa & ví dụ
+                </div>
+              </div>
+
+              <!-- Back Side -->
+              <div class="absolute inset-0 w-full h-full backface-hidden rotate-y-180 glass-panel border-2 border-emerald-500/40 rounded-3xl p-8 flex flex-col justify-between bg-gradient-to-b from-slate-800/95 to-slate-900/95">
+                <div class="flex justify-between items-center text-xs">
+                  <span class="font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1">
+                    <i class="fa-solid fa-circle-info"></i> Định nghĩa & Ý nghĩa
+                  </span>
+                  <button class="w-8 h-8 rounded-full bg-slate-800 hover:bg-emerald-600 text-slate-300 hover:text-white transition flex items-center justify-center btn-speak-word" title="Nghe phát âm">
+                    <i class="fa-solid fa-volume-high"></i>
+                  </button>
+                </div>
+
+                <div class="space-y-3">
+                  <div>
+                    <div class="text-xs text-slate-400">Nghĩa tiếng Việt:</div>
+                    <div class="text-lg font-bold text-emerald-300" id="cardMeaning">Phổ biến, có mặt ở khắp mọi nơi</div>
+                  </div>
+
+                  <div>
+                    <div class="text-xs text-slate-400">Ví dụ (Example):</div>
+                    <div class="text-sm text-slate-200 italic bg-slate-800/70 p-2.5 rounded-xl border border-slate-700/50" id="cardExample">
+                      "Smartphones have become ubiquitous in everyday life."
+                    </div>
+                  </div>
+
+                  <div class="text-xs text-slate-400" id="cardCollocation">
+                    <strong class="text-slate-300">Từ đồng nghĩa:</strong> omnipresent, pervasive
+                  </div>
+                </div>
+
+                <div class="text-xs text-slate-400 text-center">
+                  Nhấn lần nữa để lật lại mặt trước
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Flashcard Navigation Buttons -->
+          <div class="flex items-center justify-center gap-4 pt-2">
+            <button id="btnPrevCard" class="w-12 h-12 rounded-2xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 flex items-center justify-center text-lg transition shadow-md">
+              <i class="fa-solid fa-arrow-left"></i>
+            </button>
+
+            <button id="btnSpeakCurrent" class="px-5 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm flex items-center gap-2 shadow-lg shadow-indigo-600/30 transition">
+              <i class="fa-solid fa-volume-high"></i>
+              <span>Nghe Phát Âm</span>
+            </button>
+
+            <button id="btnNextCard" class="w-12 h-12 rounded-2xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 flex items-center justify-center text-lg transition shadow-md">
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Vocab Quiz Modal / Container (Hidden by default) -->
+        <div id="vocabQuizContainer" class="hidden max-w-xl mx-auto glass-panel p-6 rounded-2xl border border-emerald-500/40 shadow-2xl space-y-4">
+          <div class="flex justify-between items-center border-b border-slate-700 pb-3">
+            <h4 class="font-bold text-slate-100 flex items-center gap-2">
+              <i class="fa-solid fa-brain text-emerald-400"></i>
+              Quiz Ôn Tập Từ Vựng
+            </h4>
+            <button id="btnCloseQuiz" class="text-xs text-slate-400 hover:text-slate-200">
+              <i class="fa-solid fa-xmark text-base"></i>
+            </button>
+          </div>
+
+          <div id="quizQuestionBox" class="space-y-4">
+            <!-- Quiz question injected via JS -->
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ==================== TAB 4: READING & QUIZ ==================== -->
+    <section id="tab-reading" class="tab-content hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Left: Options & Article Generator -->
+        <div class="lg:col-span-1 space-y-4">
+          <div class="glass-panel p-6 rounded-2xl border border-slate-700/60 shadow-xl space-y-4">
+            <h3 class="font-bold text-slate-100 text-base flex items-center gap-2">
+              <i class="fa-solid fa-book-bookmark text-purple-400"></i>
+              Tùy Chọn Bài Đọc
+            </h3>
+
+            <!-- Level Selector -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1.5">Trình độ (Level):</label>
+              <select id="readingLevel" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 outline-none">
+                <option value="A2">Beginner (A2 - Cơ bản)</option>
+                <option value="B1" selected>Intermediate (B1/B2 - Trung cấp)</option>
+                <option value="C1">Advanced (C1/C2 - Nâng cao/IELTS)</option>
+              </select>
+            </div>
+
+            <!-- Topic Selector -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1.5">Chủ đề bài đọc:</label>
+              <select id="readingTopic" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 outline-none">
+                <option value="ai_tech">Trí tuệ nhân tạo & Công nghệ tương lai</option>
+                <option value="environment">Biến đổi khí hậu & Năng lượng xanh</option>
+                <option value="work_life">Cân bằng công việc & Cuộc sống hiện đại</option>
+                <option value="travel_culture">Khám phá văn hóa & Du lịch toàn cầu</option>
+              </select>
+            </div>
+
+            <!-- Generate Button -->
+            <button id="btnGenerateReading" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-medium text-sm shadow-lg shadow-purple-600/30 transition flex items-center justify-center gap-2">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+              <span>AI Tạo Bài Đọc Mới</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Right: Article & Comprehension Questions -->
+        <div class="lg:col-span-2 space-y-6">
+          <div class="glass-panel p-6 rounded-2xl border border-slate-700/60 shadow-xl space-y-4">
+            
+            <div class="flex items-center justify-between border-b border-slate-700/60 pb-3">
+              <div>
+                <span class="text-xs font-semibold px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30" id="readingBadgeLevel">Level: B1</span>
+                <h2 class="text-xl font-bold text-slate-100 mt-1" id="readingTitle">The Rise of Artificial Intelligence in Everyday Life</h2>
+              </div>
+
+              <!-- Read aloud full article -->
+              <button id="btnReadAloudArticle" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-slate-200 flex items-center gap-1.5 transition">
+                <i class="fa-solid fa-volume-high text-purple-400"></i>
+                <span>Nghe bài đọc</span>
+              </button>
+            </div>
+
+            <!-- Article Body -->
+            <div class="text-slate-200 text-sm leading-relaxed space-y-3 font-normal" id="readingArticleBody">
+              <!-- Article content injected via JS -->
+            </div>
+
+            <!-- Comprehension Questions -->
+            <div class="mt-8 pt-6 border-t border-slate-700/60 space-y-4">
+              <h4 class="font-bold text-slate-100 text-base flex items-center gap-2">
+                <i class="fa-solid fa-circle-check text-cyan-400"></i>
+                Câu Hỏi Đọc Hiểu (Comprehension Questions)
+              </h4>
+
+              <div id="readingQuestionsList" class="space-y-4">
+                <!-- Questions injected via JS -->
+              </div>
+
+              <div class="pt-3 flex justify-end">
+                <button id="btnSubmitReadingQuiz" class="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm shadow-lg shadow-emerald-600/30 transition flex items-center gap-2">
+                  <i class="fa-solid fa-paper-plane"></i>
+                  <span>Nộp Bài & Chấm Điểm</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ==================== TAB 5: PRONUNCIATION & SHADOWING ==================== -->
+    <section id="tab-pronounce" class="tab-content hidden">
+      <div class="max-w-3xl mx-auto space-y-6">
+        
+        <div class="glass-panel p-6 rounded-2xl border border-slate-700/60 shadow-xl space-y-5">
+          <div class="flex items-center justify-between border-b border-slate-700/60 pb-3">
+            <div>
+              <h3 class="font-bold text-slate-100 text-lg flex items-center gap-2">
+                <i class="fa-solid fa-microphone-lines text-pink-400"></i>
+                Luyện Phát Âm & Shadowing
+              </h3>
+              <p class="text-xs text-slate-400 mt-0.5">Nghe câu mẫu bản xứ, luyện nói theo phiên âm IPA và đối chiếu độ chính xác</p>
+            </div>
+            
+            <button id="btnNewPronounceSentence" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-slate-300 flex items-center gap-1.5 transition">
+              <i class="fa-solid fa-shuffle"></i> Đổi câu khác
+            </button>
+          </div>
+
+          <!-- Sentence Target Box -->
+          <div class="p-6 rounded-2xl bg-gradient-to-br from-slate-800/80 to-slate-900/80 border border-pink-500/30 text-center space-y-3">
+            <span class="text-xs font-semibold px-3 py-1 rounded-full bg-pink-500/20 text-pink-300 border border-pink-500/30" id="pronounceLevelBadge">
+              Level: Intermediate
+            </span>
+            <h2 class="text-xl sm:text-2xl font-bold text-white tracking-wide leading-snug" id="pronounceTargetText">
+              "Consistency is the key to mastering any new language."
+            </h2>
+            <p class="font-mono text-sm text-pink-400" id="pronounceIpaText">
+              /kənˈsɪs.tən.si ɪz ðə kiː tuː ˈmæs.tər.ɪŋ ˈɛn.i njuː ˈlæŋ.ɡwɪdʒ/
+            </p>
+            <p class="text-xs text-slate-400 italic" id="pronounceMeaningText">
+              "Sự kiên trì là chìa khóa để làm chủ bất kỳ ngôn ngữ mới nào."
+            </p>
+          </div>
+
+          <!-- Interactive Actions: Listen & Record -->
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+            
+            <!-- Listen Native Button -->
+            <button id="btnListenPronounce" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-semibold text-sm flex items-center justify-center gap-2 transition">
+              <i class="fa-solid fa-volume-high text-pink-400 text-base"></i>
+              <span>Nghe Giọng Mẫu Chuẩn</span>
+            </button>
+
+            <!-- Record Voice Button -->
+            <button id="btnRecordPronounce" class="w-full sm:w-auto px-8 py-3 rounded-xl bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-500 hover:to-rose-500 text-white font-semibold text-sm shadow-lg shadow-pink-600/30 flex items-center justify-center gap-2 transition">
+              <i class="fa-solid fa-microphone text-base"></i>
+              <span id="recordPronounceBtnText">Bấm Mic & Phát Âm</span>
+            </button>
+          </div>
+
+          <!-- Pronunciation Result Feedback -->
+          <div id="pronounceResultBox" class="hidden p-5 rounded-xl bg-slate-800/80 border border-slate-700 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase text-slate-300">Kết quả nhận diện giọng nói của bạn:</span>
+              <span id="pronounceAccuracyBadge" class="px-3 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                Độ khớp: 95%
+              </span>
+            </div>
+
+            <p id="userSpokenText" class="text-sm font-medium text-slate-200 p-3 rounded-lg bg-slate-900 border border-slate-800 italic">
+              "Consistency is the key to master any new language"
+            </p>
+
+            <div id="pronounceFeedbackTip" class="text-xs text-slate-400 flex items-start gap-2">
+              <i class="fa-solid fa-circle-info text-cyan-400 mt-0.5"></i>
+              <span>Rất tốt! Bạn phát âm rõ ràng, chú ý thêm âm đuôi "-ing" ở từ "mastering".</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ==================== TAB 6: DASHBOARD & STATS ==================== -->
+    <section id="tab-dashboard" class="tab-content hidden">
+      <div class="space-y-6">
+        
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="glass-panel p-5 rounded-2xl border border-slate-700/60 shadow-xl flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-2xl">
+              <i class="fa-solid fa-fire"></i>
+            </div>
+            <div>
+              <div class="text-2xl font-extrabold text-white" id="statStreak">3</div>
+              <div class="text-xs text-slate-400">Chuỗi ngày học (Streak)</div>
+            </div>
+          </div>
+
+          <div class="glass-panel p-5 rounded-2xl border border-slate-700/60 shadow-xl flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-2xl">
+              <i class="fa-solid fa-bolt"></i>
+            </div>
+            <div>
+              <div class="text-2xl font-extrabold text-white" id="statXp">250</div>
+              <div class="text-xs text-slate-400">Tổng điểm tích lũy (XP)</div>
+            </div>
+          </div>
+
+          <div class="glass-panel p-5 rounded-2xl border border-slate-700/60 shadow-xl flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-2xl">
+              <i class="fa-solid fa-layer-group"></i>
+            </div>
+            <div>
+              <div class="text-2xl font-extrabold text-white" id="statVocabCount">24</div>
+              <div class="text-xs text-slate-400">Từ vựng đã ôn luyện</div>
+            </div>
+          </div>
+
+          <div class="glass-panel p-5 rounded-2xl border border-slate-700/60 shadow-xl flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center text-2xl">
+              <i class="fa-solid fa-comments"></i>
+            </div>
+            <div>
+              <div class="text-2xl font-extrabold text-white" id="statChatCount">18</div>
+              <div class="text-xs text-slate-400">Lượt hội thoại với AI</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Badges & Achievements -->
+        <div class="glass-panel p-6 rounded-2xl border border-slate-700/60 shadow-xl space-y-4">
+          <h3 class="font-bold text-slate-100 text-base flex items-center gap-2">
+            <i class="fa-solid fa-trophy text-amber-400"></i>
+            Huy Hiệu & Thành Tựu
+          </h3>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div class="p-4 rounded-xl bg-slate-800/80 border border-amber-500/30 text-center space-y-1">
+              <div class="text-3xl">🌱</div>
+              <div class="font-bold text-xs text-slate-200">Khởi Đầu Tự Tin</div>
+              <div class="text-[10px] text-slate-400">Hoàn thành bài học đầu tiên</div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-800/80 border border-indigo-500/30 text-center space-y-1">
+              <div class="text-3xl">🗣️</div>
+              <div class="font-bold text-xs text-slate-200">Bậc Thầy Giao Tiếp</div>
+              <div class="text-[10px] text-slate-400">Nói 10 câu với AI</div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-800/80 border border-emerald-500/30 text-center space-y-1">
+              <div class="text-3xl">📚</div>
+              <div class="font-bold text-xs text-slate-200">Bách Khoa Từ Vựng</div>
+              <div class="text-[10px] text-slate-400">Lật qua 20 thẻ từ vựng</div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-800/80 border border-purple-500/30 text-center space-y-1">
+              <div class="text-3xl">🎯</div>
+              <div class="font-bold text-xs text-slate-200">Điểm Tuyệt Đối</div>
+              <div class="text-[10px] text-slate-400">Đạt 100% điểm trắc nghiệm</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- AI Settings Modal -->
+  <div id="settingsModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="glass-panel w-full max-w-md rounded-2xl border border-slate-700 shadow-2xl p-6 space-y-5 bg-slate-900">
+      <div class="flex justify-between items-center border-b border-slate-700 pb-3">
+        <h3 class="font-bold text-slate-100 flex items-center gap-2 text-base">
+          <i class="fa-solid fa-sliders text-indigo-400"></i>
+          Cấu Hình Gemini AI
+        </h3>
+        <button id="btnCloseSettings" class="text-slate-400 hover:text-slate-200">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div class="space-y-4 text-sm">
+        <div>
+          <label class="block font-semibold text-slate-200 mb-1 text-xs">
+            Google Gemini API Key:
+          </label>
+          <input type="password" id="inputApiKey" placeholder="Dán API Key (AIzaSy...) tại đây" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-100 placeholder-slate-500 text-xs focus:border-indigo-500 focus:outline-none font-mono">
+          <p class="text-[11px] text-slate-400 mt-1">
+            Chưa có key? Lấy miễn phí tại <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-indigo-400 underline">Google AI Studio</a>.
+          </p>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-200 mb-1 text-xs">
+            Mô hình AI (Model):
+          </label>
+          <select id="selectAiModel" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 text-xs outline-none">
+            <option value="gemini-2.5-flash">Gemini 2.5 Flash (Khuyên dùng - Nhanh & Mới nhất)</option>
+            <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
+            <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
+            <option value="demo">Chế độ Demo / Offline (Không cần Key)</option>
+          </select>
+        </div>
+
+        <div class="p-3 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-xs text-indigo-300">
+          <i class="fa-solid fa-shield-halved mr-1"></i> API Key được lưu an toàn tại LocalStorage trên trình duyệt của bạn, không gửi qua bất kỳ máy chủ trung gian nào.
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2">
+        <button id="btnSaveSettings" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs shadow-md transition">
+          Lưu Cấu Hình
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Vocab Generator Modal -->
+  <div id="aiVocabModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="glass-panel w-full max-w-md rounded-2xl border border-slate-700 shadow-2xl p-6 space-y-4 bg-slate-900">
+      <div class="flex justify-between items-center border-b border-slate-700 pb-3">
+        <h3 class="font-bold text-slate-100 flex items-center gap-2 text-base">
+          <i class="fa-solid fa-wand-magic-sparkles text-indigo-400"></i>
+          AI Tạo Bộ Từ Vựng Mới
+        </h3>
+        <button id="btnCloseAiVocabModal" class="text-slate-400 hover:text-slate-200">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-sm">
+        <div>
+          <label class="block font-semibold text-slate-200 mb-1 text-xs">Chủ đề mong muốn:</label>
+          <input type="text" id="inputAiVocabTopic" placeholder="Ví dụ: Du lịch Nhật Bản, Đàm phán lương, Trí tuệ nhân tạo..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-slate-100 placeholder-slate-500 text-xs focus:border-indigo-500 focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-200 mb-1 text-xs">Trình độ mục tiêu:</label>
+          <select id="selectAiVocabLevel" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 text-xs outline-none">
+            <option value="A2">Cơ bản (A2)</option>
+            <option value="B1">Trung cấp (B1)</option>
+            <option value="B2" selected>Khá (B2)</option>
+            <option value="C1">Nâng cao / IELTS 7.0+ (C1)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2">
+        <button id="btnGenerateAiVocabSubmit" class="px-5 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium text-xs shadow-md transition flex items-center gap-1.5">
+          <i class="fa-solid fa-sparkles"></i> Tạo Thẻ Ngay
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Main Application Logic -->
+  <script src="app.js"></script>
+</body>
+</html>
